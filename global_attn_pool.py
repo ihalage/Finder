@@ -108,14 +108,7 @@ class GlobalAttnAvgPool(MessagePassing):
             else:
                 self.data_mode = "batch"
             F = input_shape[-1]
-        # Attention kernels
-        # self.attn_kernel = self.add_weight(
-        #     shape=(F, 1),
-        #     initializer=self.attn_kernel_initializer,
-        #     regularizer=self.attn_kernel_regularizer,
-        #     constraint=self.attn_kernel_constraint,
-        #     name="attn_kernel",
-        # )
+
         self.built = True
 
     def unsorted_segment_softmax(self, x, indices, n_nodes=None):
@@ -134,57 +127,22 @@ class GlobalAttnAvgPool(MessagePassing):
         e_x = tf.exp(
             x - tf.gather(tf.math.unsorted_segment_max(x, indices, n_nodes), indices)
         )
-        # e_x = tf.exp(x)
-        
-
-        # l = K.print_tensor(e_x, message='e_x = ')
-        # tf.debugging.check_numerics(e_x, "Global pooling e_x have nan!")
-        # global_attr = tf.math.unsorted_segment_sum(e_x, indices, n_nodes)
-        # _,_,nodes_list = tf.unique_with_counts(self.index_i)
-        # gat = tf.repeat(global_attr, nodes_list, axis=-2)
-        # seg_sum = tf.math.unsorted_segment_sum(e_x, indices, n_nodes)
-        
-        # tf.debugging.check_numerics(seg_sum, "Global pooling seg_sum have nan!")
-        # gather = tf.gather(
-        #     # tf.math.unsorted_segment_sum(e_x, indices, n_nodes) + 1e-9, indices
-        #     tf.math.segment_sum(e_x, indices) + 1e-8, indices
-        # )
-        # tf.debugging.check_numerics(gather, "Global pooling gather have nan!")
-        # l = K.print_tensor(gather, message='gather = ')
-        
-
+ 
 
         e_x /= tf.gather(
             tf.math.unsorted_segment_sum(e_x, indices, n_nodes) + 1e-9, indices
-            # tf.math.segment_sum(e_x, indices) + 1e-8, indices
         )
         return e_x
 
     def GATENN(self):
         model = tf.keras.Sequential([
-            # layers.BatchNormalization(),
-        # layers.Conv1D(2, 3, activation="relu", name="layer1"),
-        # layers.Conv1D(128, 3, activation="relu", name="layer2"),
-        # layers.Conv1D(256, 3, activation="relu", name="layer3"),
-        # layers.Flatten(),#, kernel_constraint=min_max_norm(min_value=1e-40, max_value=1.0)
         layers.Dense(256, activation="relu", name="layer4", kernel_regularizer=regularizers.l2(1e-6), kernel_constraint=min_max_norm(min_value=1e-30, max_value=1.0)),
-        # layers.Dense(64, activation="relu", name="layer2", kernel_regularizer=regularizers.l2(1e-6)),
-        # layers.Dense(128, activation="relu", name="layer3"),
-        # layers.Dense(256, activation="relu", name="layer4"),
         layers.Dense(self.channels, name="layer5", kernel_constraint=min_max_norm(min_value=1e-30, max_value=1.0))])
         return model
 
     def MESSAGENN(self):
         model = tf.keras.Sequential([
-            # layers.BatchNormalization(),
-        # layers.Conv1D(2, 3, activation="relu", name="layer1"),
-        # layers.Conv1D(128, 3, activation="relu", name="layer2"),
-        # layers.Conv1D(256, 3, activation="relu", name="layer3"),
-        # layers.Flatten(),
         layers.Dense(256, activation="relu", name="layer4", kernel_regularizer=regularizers.l2(1e-6)),
-        # layers.Dense(64, activation="relu", name="layer2", kernel_regularizer=regularizers.l2(1e-6)),
-        # layers.Dense(128, activation="relu", name="layer3"),
-        # layers.Dense(256, activation="relu", name="layer4"),
         layers.Dense(self.channels, name="layer5")])
         return model
 
@@ -197,39 +155,14 @@ class GlobalAttnAvgPool(MessagePassing):
         else:
             X = inputs
 
-        # # attn_coeff = K.dot(X, self.attn_kernel)
-        # # attn_coeff = K.squeeze(attn_coeff, -1)
-        # # attn_coeff = K.softmax(attn_coeff)
-        # if self.data_mode == "single":
-        #     output = K.dot(attn_coeff[None, ...], X)
-        # elif self.data_mode == "batch":
-        #     output = K.batch_dot(attn_coeff, X)
-        # else:
-        #     # output = attn_coeff[:, None] * X
-        #     output = tf.math.segment_mean(output, I)
 
-        # x_i = self.get_i(X)
-        # x_j = self.get_j(X)
-        # print(X.shape)
         gate = self.gate_nn(X)
-        # tf.debugging.check_numerics(gate, "gate weights have nan!")
-        # gate=X
+
         self.n_nodes = tf.shape(X)[-2]
-        # neighbors_mean = (x_i+x_j)/2.0
         aij = self.unsorted_segment_softmax(gate, I, self.n_nodes)
-        # tf.debugging.check_numerics(aij, "Global pool aij weights have nan!")
-        # aij = scatter_mean(aij, self.index_i, self.n_nodes)
-        # print('X: ', X.shape)
-        # print('aij: ', aij.shape)
+
         x = self.message_nn(X)
-        # x=X
         output = tf.math.segment_sum(x*aij, I)
-        # output = tf.math.segment_max(x*aij, I)
-
-        # one_string = tf.strings.format("{}\n", output, summarize=-1)
-        # tf.io.write_file('global_attribute', one_string, name=None)
-
-
 
         return output
 
