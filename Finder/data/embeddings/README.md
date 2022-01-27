@@ -1,5 +1,3 @@
-## Element embedding files are taken from [Predicting materials properties without crystal structure: deep representation learning from stoichiometry](https://www.nature.com/articles/s41467-020-19964-7)
-
 # Embeddings
 
 ## CGCNN
@@ -28,6 +26,7 @@ This is a simple one-hot encoding for the elements
 
 These a selection of normalised atomic properties collated from various sources.
 
+## Element embedding files are taken from [Predicting materials properties without crystal structure: deep representation learning from stoichiometry](https://www.nature.com/articles/s41467-020-19964-7)
 
 
 
