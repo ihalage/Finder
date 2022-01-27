@@ -4,6 +4,8 @@
 
 This project requires `python3.6` or above. Please make sure you have the `pip3` module installed. Using a virtual environment is recommended. Inside the root directory, execute `pip install --ignore-installed -r requirements.txt` to install the dependencies. This should install all packages required to run `Finder`. Please open an issue if there are installation errors.
 
+`Finder` is built using [spektral](https://graphneural.network/) graph deep learning library. You may read the documentation of spektral [here](https://graphneural.network/getting-started/).
+
 ## Database
 
 Please download the The Materials Project data used in this work from [figshare](https://figshare.com/articles/dataset/MP_data/19074599). Extract the zip file and place `MP` directory inside `data/databases/`. Note that each data file should have three columns `ID`, `formula` and `target`. An additional `cif` column is required for crystal structure based predictions.
