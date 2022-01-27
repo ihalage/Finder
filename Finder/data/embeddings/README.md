@@ -1,4 +1,4 @@
-# Element embedding files are taken from [Predicting materials properties without crystal structure: deep representation learning from stoichiometry](https://www.nature.com/articles/s41467-020-19964-7)
+## Element embedding files are taken from [Predicting materials properties without crystal structure: deep representation learning from stoichiometry](https://www.nature.com/articles/s41467-020-19964-7)
 
 # Embeddings
 
