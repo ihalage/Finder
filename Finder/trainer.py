@@ -81,7 +81,7 @@ class Worker(object):
 				use_crystal_structure=False,
 				embedding_path='data/embeddings/',
 				embedding_type='mat2vec',
-				max_no_atoms=1000):
+				max_no_atoms=500):
 
 		self.train_path = train_path
 		self.val_path = val_path
@@ -115,7 +115,8 @@ class Worker(object):
 								embedding_path=self.embedding_path,
 								embedding_type=self.embedding_type,
 								threshold_radius=self.threshold_radius,
-								use_crystal_structure=self.use_crystal_structure)
+								use_crystal_structure=self.use_crystal_structure,
+								max_no_atoms=self.max_no_atoms)
 
 		## get scaler attribute after fitting on training data
 		self.scaler = dataset_tr.scaler
@@ -130,7 +131,8 @@ class Worker(object):
 								scaler=self.scaler,
 								embedding_path=self.embedding_path,
 								embedding_type=self.embedding_type,
-								use_crystal_structure=self.use_crystal_structure)
+								use_crystal_structure=self.use_crystal_structure,
+								max_no_atoms=self.max_no_atoms)
 
 		loader_tr = DisjointLoader(dataset_tr, batch_size=self.batch_size, epochs=self.epochs)
 		loader_val = DisjointLoader(dataset_val, batch_size=self.batch_size, epochs=1)
@@ -273,7 +275,8 @@ class Worker(object):
 							scaler=self.scaler,
 							embedding_path=self.embedding_path,
 							embedding_type=self.embedding_type,
-							use_crystal_structure=self.use_crystal_structure)
+							use_crystal_structure=self.use_crystal_structure,
+							max_no_atoms=self.max_no_atoms)
 
 		loader_te = DisjointLoader(dataset_te, batch_size=self.batch_size, epochs=1, shuffle=False)
 
@@ -430,7 +433,7 @@ def argument_parser():
 	parser.add_argument(
 		'--use-crystal-structure', 
 		help='''Use the crystal structures to learn material properties. 
-			This requires a column 'cif' in train.csv, val.csv and test.csv files containing the cif of all crystals. 
+			This requires a column 'cif' in train.csv, val.csv and test.csv files containing the cif of all crystals in string format. 
 			May take a few minutes to process ''', 
 		action='store_true')
 	parser.add_argument(
@@ -448,7 +451,7 @@ def argument_parser():
 	parser.add_argument(
 		'--max-no-atoms',
 		type=int,
-		default=1000,
+		default=500,
 		help='Maximum number of atoms that can be in the integer formula graph (E.g. BaTiO3 has 5 atoms)'
 		)
 

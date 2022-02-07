@@ -27,7 +27,7 @@ class DataLoader(Dataset):
 				pred_func=False,
 				embedding_path='data/embeddings/',
 				embedding_type='mat2vec',
-				max_no_atoms=1000,
+				max_no_atoms=500,
 				threshold_radius=4,
 				use_edge_predictor=False,
 				use_crystal_structure=False,
@@ -95,7 +95,7 @@ class DataLoader(Dataset):
 			return nelements, has_inert_gas, num_atoms
 
 		df['nelements'], df['has_inert_gas'], df['num_atoms'] = zip(*df.apply(analyse_comp, axis=1))
-		# discard materials with only one element, having inert gases or having more than max_no_atoms=1000 in the unit cell (for computational efficiency)
+		# discard materials with only one element, having inert gases or having more than max_no_atoms=500 in the unit cell (for computational efficiency)
 		df = df[(df.nelements>1) & (df.has_inert_gas==False) & (df.num_atoms < self.max_no_atoms)]
 		df = df.drop(['nelements', 'has_inert_gas', 'num_atoms'], axis=1, errors='ignore')
 		df.reset_index(drop=True, inplace=True)
