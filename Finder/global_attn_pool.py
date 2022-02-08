@@ -55,7 +55,7 @@ class GlobalPool(Layer):
             return input_shape[0]
 
 
-class GlobalAttnAvgPool(MessagePassing):
+class GlobalAttnSumPool(MessagePassing):
     r"""
     A node-attention global pooling layer. Pools a graph by learning attention
     coefficients to sum node features.
@@ -177,14 +177,14 @@ class GlobalAttnAvgPool(MessagePassing):
 
 
 
-class GlobalAttnSumPool(GlobalPool):
+class GlobalAttnAvgPool(GlobalPool):
     r"""
     A node-attention global pooling layer. Pools a graph by learning attention
-    coefficients to sum node features.
+    coefficients to average node features.
     This layer computes:
     $$
         \alpha = \textrm{softmax}( \X \a); \\
-        \X' = \sum\limits_{i=1}^{N} \alpha_i \cdot \X_i
+        \X' = \mean\limits_{i=1}^{N} \alpha_i \cdot \X_i
     $$
     where \(\a \in \mathbb{R}^F\) is a trainable vector. Note that the softmax
     is applied across nodes, and not across features.
@@ -252,7 +252,7 @@ class GlobalAttnSumPool(GlobalPool):
             output = K.batch_dot(attn_coeff, X)
         else:
             output = attn_coeff[:, None] * X
-            output = tf.math.segment_sum(output, I)
+            output = tf.math.segment_mean(output, I)
 
         return output
 

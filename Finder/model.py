@@ -3,7 +3,7 @@ import warnings
 warnings.filterwarnings("ignore")
 from spektral.layers.ops import scatter_mean, scatter_max, scatter_sum, scatter_min
 from spektral.layers import MessagePassing
-from global_attn_pool import GlobalAttnAvgPool
+from global_attn_pool import GlobalAttnSumPool
 import os
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
@@ -219,8 +219,8 @@ class Finder(Model):
 		self.conv2 = GraphLayer(channels, aggregate_type=aggregate_type,
 								use_crystal_structure=use_crystal_structure, activation='relu')
 
-		self.global_pool1 = GlobalAttnAvgPool(channels=channels)
-		self.global_pool2 = GlobalAttnAvgPool(channels=channels)
+		self.global_pool1 = GlobalAttnSumPool(channels=channels)
+		self.global_pool2 = GlobalAttnSumPool(channels=channels)
 
 		self.conv1d1 = layers.Conv1D(64, 3, activation='relu', padding='same')
 		self.dense1 = layers.Dense(512, activation='relu', kernel_regularizer=regularizers.l2(1e-6))
