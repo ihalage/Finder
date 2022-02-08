@@ -320,17 +320,19 @@ class Worker(object):
 		df_preds.to_csv("results/test_results.csv", index=False)
 
 	def get_valid_compounds(self, df):
-		def analyse_comp(row):
-			nelements = len(Composition(row.formula).elements)
-			has_inert_gas = any(i in Composition(row.formula).elements for i in [Element('He'), Element('Ne'), Element('Ar'), Element('Kr'), Element('Xe')])
-			num_atoms = Composition(Composition(row.formula).get_integer_formula_and_factor()[0]).num_atoms
-			return nelements, has_inert_gas, num_atoms
-
-		df['nelements'], df['has_inert_gas'], df['num_atoms'] = zip(*df.apply(analyse_comp, axis=1))
-		# discard materials with only one element, having inert gases or having more than max_no_atoms=1000 in the unit cell (for computational efficiency)
-		df = df[(df.nelements>1) & (df.has_inert_gas==False) & (df.num_atoms < self.max_no_atoms)]
-		df = df.drop(['nelements', 'has_inert_gas', 'num_atoms'], axis=1, errors='ignore')
+		df['num_atoms'] = df.apply(lambda x: Composition(Composition(x.formula).get_integer_formula_and_factor()[0]).num_atoms, axis=1)
+		# discard materials having more than max_no_atoms=500 in the unit cell (for computational efficiency)
+		len_df = df.shape[0] # to check if any materials are discarded due to large no of atoms in unit cell
+		df = df[(df.num_atoms < self.max_no_atoms)]
+		df = df.drop(['num_atoms'], axis=1, errors='ignore')
 		df.reset_index(drop=True, inplace=True)
+
+		if df.shape[0]!=len_df:
+			print('\n===================== WARNING ================================\n')
+			# warnings.warn("{0} materials have been discarded from the current dataset because they contain more than {1} atoms in the formula/unit cell".format(len_df-df.shape[0], self.max_no_atoms))
+			print("{0} materials have been discarded from the current dataset because they contain more than {1} atoms in the formula/unit cell".format(len_df-df.shape[0], self.max_no_atoms))
+			print('\n============================================================\n')
+
 		return df
 
 
