@@ -29,7 +29,6 @@ class DataLoader(Dataset):
 				embedding_type='mat2vec',
 				max_no_atoms=500,
 				threshold_radius=4,
-				use_edge_predictor=False,
 				use_crystal_structure=False,
 				**kwargs):
 
@@ -42,7 +41,6 @@ class DataLoader(Dataset):
 		self.embedding_type = embedding_type
 		self.max_no_atoms = max_no_atoms
 		self.threshold_radius = threshold_radius
-		self.use_edge_predictor = use_edge_predictor
 		self.use_crystal_structure = use_crystal_structure
 		self.efCls = ElementFraction()
 		super().__init__(**kwargs)
@@ -51,16 +49,6 @@ class DataLoader(Dataset):
 		with open(self.embedding_path+self.embedding_type+'-embedding.json') as file:
 			data = json.load(file)
 			return dict(data)
-
-	def parse_formulae(self, data_path=None, data=None):
-		if data_path is not None:
-			df = pd.read_csv(data_path, keep_default_na = False)
-		if data is not None:
-			df = data
-		df_a = df.apply(lambda x: self.efCls.featurize(Composition(x.formula)), axis=1, result_type='expand')
-		df_featurized = pd.concat([df, df_a], axis='columns')
-		X = df_featurized.drop(['ID', 'formula', 'integer_formula', 'nsites', 'Z', 'target', 'cif', 'nelements', 'is_inert_gas'], axis=1, errors='ignore')
-		return np.expand_dims(X, axis=-1)
 
 	def get_angle_matrix(self, coords1, coords2, units='radians'): # not used
 		'''
@@ -75,7 +63,7 @@ class DataLoader(Dataset):
 	def gaussian_expansion(self, distance_matrix, dmin=0, dmax=5, step=0.25, std=0.5):
 		return np.exp(-(distance_matrix[..., np.newaxis] - np.arange(dmin, dmax, step))**2 / std**2)
 
-	def RBF_expansion(self, distance_matrix, dmin=0, dmax=8, bins=20):#step=0.25
+	def RBF_expansion(self, distance_matrix, dmin=0, dmax=8, bins=20):#step=0.25 not used
 		centers = np.linspace(dmin, dmax, bins)
 		lengthscale = np.diff(centers).mean()
 		gamma = 1/lengthscale
@@ -89,7 +77,7 @@ class DataLoader(Dataset):
 			df = pd.read_csv(self.data_path)
 
 		df['num_atoms'] = df.apply(lambda x: Composition(Composition(x.formula).get_integer_formula_and_factor()[0]).num_atoms, axis=1)
-		# discard materials with only one element, having inert gases or having more than max_no_atoms=500 in the unit cell (for computational efficiency)
+		# discard materials having more than max_no_atoms=500 in the unit cell (for computational efficiency)
 		len_df = df.shape[0] # to check if any materials are discarded due to large no of atoms in unit cell
 		df = df[(df.num_atoms < self.max_no_atoms)]
 		df = df.drop(['num_atoms'], axis=1, errors='ignore')
@@ -139,7 +127,6 @@ class DataLoader(Dataset):
 
 				x, y = np.where(A==1)
 				expanded_distances = self.gaussian_expansion(distance_matrix)
-				# expanded_distances = self.RBF_expansion(distance_matrix)
 				E = expanded_distances[x, y] # edge attribute
 
 			else:	# integer formula graph
