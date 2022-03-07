@@ -30,15 +30,21 @@ An additional `--use-crystal-structure` flag is required to train structure-base
 python trainer.py --train-path data/databases/MP_2021_July_no_polymorph/bandgap/train.csv --val-path data/databases/MP_2021_July_no_polymorph/bandgap/val.csv --test-path data/databases/MP_2021_July_no_polymorph/bandgap/test.csv --epochs 1200 --batch-size 128 --train --test --use-crystal-structure
 ```
 
-### How to predict materials properties using a trained Finder model?
+### How to predict materials properties using a pre-trained Finder model?
 
-Once you train a `Finder` model, a directory named `saved_models/best_model_gnn` that contains the best model will be created. You may then run the following to make predictions using this pre-trained model. Use `--use-crystal-structure` flag if this is a structure-based `Finder` model.
+Once you train a `Finder` model, a directory named `saved_models/best_model_gnn` that contains the best model will be created. You may then run the following to make predictions using this pre-trained model. Add `--use-crystal-structure` flag if this is a structure-based `Finder` model. If the target property value is unknown, please fill in the `target` column of your data file with some dummy values.
 
 ```
-python trainer.py --model-path saved_models/best_model_gnn/  --test-path data/databases/MP/formation_energy/test.csv --test
+python trainer.py --model-path saved_models/best_model_gnn/ --test-path data/databases/MP_2021_July_no_polymorph/formation_energy/test.csv --test
 ```
 
 Prediction results will be saved in `results/` directory. 
+
+You may download the pre-trained `Finder` models for MP property prediction tasks from [figshare](https://doi.org/10.6084/m9.figshare.19308392). Assuming that the zip file is extracted in the root directory, you may run the following snippet to evaluate for example the refractive index model.
+
+```
+python trainer.py --model-path Finder_pre-trained/Structure-based/best_model_gnn_refractive_index_SB/ --test-path data/databases/MP_2021_July_no_polymorph/refractive_index/test.csv --test --use-crystal-structure
+```
 
 
 ## Funding
