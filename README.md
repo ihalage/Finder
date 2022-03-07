@@ -40,7 +40,7 @@ python trainer.py --model-path saved_models/best_model_gnn/ --test-path data/dat
 
 Prediction results will be saved in `results/` directory. 
 
-You may download the pre-trained `Finder` models for MP property prediction tasks from [figshare](https://doi.org/10.6084/m9.figshare.19308392). Assuming that the zip file is extracted in the root directory, you may run the following snippet to evaluate for example the refractive index model.
+You may download the pre-trained `Finder` models for MP property prediction tasks from [figshare](https://doi.org/10.6084/m9.figshare.19308392). Assuming that the zip file is extracted in the root directory, you may run the following snippet to evaluate,  for example the structure-based refractive index model.
 
 ```
 python trainer.py --model-path Finder_pre-trained/Structure-based/best_model_gnn_refractive_index_SB/ --test-path data/databases/MP_2021_July_no_polymorph/refractive_index/test.csv --test --use-crystal-structure
