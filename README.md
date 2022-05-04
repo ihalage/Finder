@@ -1,10 +1,12 @@
-# [F]()ormula graph self-attent[i]()on [n]()etwork for representation-domain independent materials [d]()iscov[er]()y ([Finder](https://arxiv.org/abs/2201.05649))
+# [F]()ormula graph self-attent[i]()on [n]()etwork for representation-domain independent materials [d]()iscov[er]()y ([Finder](https://onlinelibrary.wiley.com/doi/10.1002/advs.202200164))
+
+![Finder architecture](https://github.com/ihalage/Finder/blob/main/Finder/figures/figure2.png)
 
 ## Installation
 
-This project requires `python3.6` or above. Please make sure you have the `pip3` module installed. Using a virtual environment is recommended. Inside the root directory, execute `pip install --ignore-installed -r requirements.txt` to install the dependencies. This should install all packages required to run `Finder`. Please open an issue if there are installation errors.
+This project requires `python3.6` or above. Please make sure you have the `pip3` module installed. Using a virtual environment is recommended. Inside the root directory, execute `pip install -r requirements.txt` to install the dependencies. This should install all packages required to run `Finder`. Please open an issue if there are installation errors.
 
-`Finder` is built using [spektral](https://graphneural.network/) graph deep learning library. You may read the documentation of spektral [here](https://graphneural.network/getting-started/).
+`Finder` is built using [spektral](https://graphneural.network/) graph deep learning library. You may read the documentation of spektral [here](https://graphneural.network/getting-started/). Note that the current version of `Finder` requires `spektral-1.0.7`.
 
 ## Database
 
