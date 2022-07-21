@@ -1,10 +1,12 @@
 # [F]()ormula graph self-attent[i]()on [n]()etwork for representation-domain independent materials [d]()iscov[er]()y ([Finder](https://onlinelibrary.wiley.com/doi/10.1002/advs.202200164))
 
-![Finder architecture](https://github.com/ihalage/Finder/blob/main/Finder/figures/figure2.png)
+<p align="center">
+<img src="https://github.com/ihalage/Finder/blob/main/Finder/figures/figure2.png" align="center" width="600">
+</p>
 
 ## Installation
 
-This project requires `python3.6` or above. Please make sure you have the `pip3` module installed. It is recommended to use a virtual environment as follows.
+This project requires `python3.8` or above. Please make sure you have the `pip3` module installed. It is recommended to use a virtual environment to install the `Finder` package as follows.
 
 ```
 python -m venv Finder_env
