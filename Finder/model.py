@@ -159,24 +159,24 @@ class GraphLayer(MessagePassing):
 		return C
 
 	def message(self, x, e=None):
-		x_i = self.get_i(x)
-		x_j = self.get_j(x)
+		x_i = self.get_sources(x)
+		x_j = self.get_targets(x)
 
 		neighbors_mean = (x_i+x_j)/2.0
 		
 		if self.use_crystal_structure: # crystal graph. Edge attribute is available as distance
 			to_concat = [neighbors_mean, e]
 		else: # integer formula graph. Edge attribute is predicted during training
-			global_attr = scatter_mean(neighbors_mean, self.index_i, self.n_nodes)
-			_,_,nodes_list = tf.unique_with_counts(self.index_i)
-			global_at = tf.gather(global_attr, self.index_i)
+			global_attr = scatter_mean(neighbors_mean, self.index_sources, self.n_nodes)
+			_,_,nodes_list = tf.unique_with_counts(self.index_sources)
+			global_at = tf.gather(global_attr, self.index_sources)
 			neighbors = K.concatenate([neighbors_mean, global_at], axis=-1)
 			
 			edge = self.edgenet(neighbors)
 			to_concat = [neighbors_mean, edge]
 
 		z = K.concatenate(to_concat, axis=-1)
-		aij = self.attention(x_i, x_j, self.index_i, self.n_nodes, attn_heads=1) # self-attention
+		aij = self.attention(x_i, x_j, self.index_sources, self.n_nodes, attn_heads=1) # self-attention
 
 		output = (aij*self.snet(z))
 		output = K.batch_normalization(output, mean=0, var=0.5, gamma=1, beta=0)
@@ -185,16 +185,16 @@ class GraphLayer(MessagePassing):
 
 	def aggregate(self, messages):
 		if self.aggregate_type=='mean':
-			return scatter_mean(messages, self.index_i, self.n_nodes)
+			return scatter_mean(messages, self.index_sources, self.n_nodes)
 		elif self.aggregate_type=='sum':
-			return scatter_sum(messages, self.index_i, self.n_nodes)
+			return scatter_sum(messages, self.index_sources, self.n_nodes)
 		elif self.aggregate_type=='max':
-			return scatter_max(messages, self.index_i, self.n_nodes)
+			return scatter_max(messages, self.index_sources, self.n_nodes)
 		elif self.aggregate_type=='min':
-			return scatter_min(messages, self.index_i, self.n_nodes)
+			return scatter_min(messages, self.index_sources, self.n_nodes)
 		else:
 			warnings.warn("Specified aggregate function not available. Using mean as the aggregate function ...")
-			return scatter_mean(messages, self.index_i, self.n_nodes)
+			return scatter_mean(messages, self.index_sources, self.n_nodes)
 
 	def update(self, embeddings, x=None):
 		return self.w_internal(x) + embeddings

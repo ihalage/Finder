@@ -9,7 +9,7 @@ warnings.filterwarnings("ignore")
 
 from utils import Normalizer, NormalizeTensor
 
-from pymatgen import Composition, Element, Structure
+from pymatgen.core import Composition, Element, Structure
 from matminer.featurizers.composition import ElementFraction
 
 from spektral.data import Dataset, Graph

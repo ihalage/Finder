@@ -32,7 +32,7 @@ from model import Finder
 from spektral.data import DisjointLoader
 from data_loader import DataLoader
 
-from pymatgen import Composition, Element, MPRester
+from pymatgen.core import Composition, Element
 from matminer.featurizers.base import MultipleFeaturizer
 from matminer.featurizers import composition as cf
 from matminer.featurizers.composition import ElementFraction
