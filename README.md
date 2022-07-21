@@ -4,9 +4,16 @@
 
 ## Installation
 
-This project requires `python3.6` or above. Please make sure you have the `pip3` module installed. Using a virtual environment is recommended. Inside the root directory, execute `pip install -r requirements.txt` to install the dependencies. This should install all packages required to run `Finder`. Please open an issue if there are installation errors.
+This project requires `python3.6` or above. Please make sure you have the `pip3` module installed. It is recommended to use a virtual environment as follows.
 
-`Finder` is built using [spektral](https://graphneural.network/) graph deep learning library. You may read the documentation of spektral [here](https://graphneural.network/getting-started/). Note that the current version of `Finder` requires `spektral-1.0.7`.
+```
+python -m venv Finder_env
+source Finder_env/bin/activate
+```
+
+Inside the root directory, execute `pip install -r requirements.txt` to install the dependencies. This should install all packages required to run `Finder`. Please open an issue if there are installation errors.
+
+`Finder` is built using [spektral](https://graphneural.network/) graph deep learning library. You may read the documentation of spektral [here](https://graphneural.network/getting-started/). Note that the current version of `Finder` requires `spektral-1.1.0`.
 
 ## Database
 
