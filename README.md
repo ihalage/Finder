@@ -60,3 +60,22 @@ python trainer.py --model-path Finder_pre-trained/Structure-based/best_model_gnn
 
 ## Funding
 We acknowledge funding received by The Institution of Engineering and Technology (IET) under the AF Harvey Research Prize. This work is supported in part by EPSRC Software Defined Materials for Dynamic Control of Electromagnetic Waves (ANIMATE) grant (No. EP/R035393/1) 
+
+## Citation
+Consider citing our paper if you find the `Finder` model and the codebase useful.
+
+```
+@article{Ihalage_2022_Adv_Sci,
+author = {Ihalage, Achintha and Hao, Yang},
+title = {Formula Graph Self-Attention Network for Representation-Domain Independent Materials Discovery},
+journal = {Advanced Science},
+volume = {9},
+number = {18},
+pages = {2200164},
+keywords = {attention, epsilon-near-zero, graph-network, machine-learning, materials-informatics},
+doi = {https://doi.org/10.1002/advs.202200164},
+url = {https://onlinelibrary.wiley.com/doi/abs/10.1002/advs.202200164},
+eprint = {https://onlinelibrary.wiley.com/doi/pdf/10.1002/advs.202200164},
+year = {2022}
+}
+```
